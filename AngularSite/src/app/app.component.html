@@ -1,0 +1,27 @@
+<!--The whole content below can be removed with the new code.-->
+<div style="text-align:center">
+  <h1>
+    <p>{{title}}</p>
+  </h1>
+  <h2>
+    <p>Game of Thrones Heroes:</p>
+  </h2>
+  <ul class="heroes">
+    <li *ngFor="let hero of heroes"
+        [class.selected]="hero === selectedHero"
+        (click)="onSelect(hero)">
+      <span class="badge">{{hero.id}}</span> {{hero.name}}
+    </li>
+  </ul>
+  <div *ngIf="selectedHero">
+    <h2>
+      <p>{{selectedHero.name}} Details:</p>
+    </h2>
+    <div><label>id: </label>{{selectedHero.id}}</div>
+    <div>
+      <label>name: </label>
+      <input [(ngModel)]="selectedHero.name" placeholder="name"/>
+    </div>
+  </div>
+</div>
+
