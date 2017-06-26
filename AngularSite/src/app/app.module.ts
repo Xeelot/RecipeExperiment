@@ -18,10 +18,10 @@ import {RouterModule} from "@angular/router";
   imports: [
     BrowserModule,
     FormsModule,
-    RouterModule.forRoot([{
-      path: 'heroes',
-      component: HeroesComponent
-    }])
+    RouterModule.forRoot([
+      {path: '', redirectTo: '/heroes', pathMatch: 'full'},
+      {path: 'heroes', component: HeroesComponent}
+      ])
   ],
   providers: [HeroService],
   bootstrap: [AppComponent]
