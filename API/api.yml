@@ -1,0 +1,538 @@
+swagger: "2.0"
+info:
+  description: "This is the spec for Hannah's Cookie Experiment site"
+  version: "1.0.0"
+  title: "Cookie Experiment"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "xeelotapps@gmail.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+consumes:
+- "application/json"
+produces:
+- "application/json"
+basePath: "/v1"
+tags:
+- name: "ingredient"
+  description: "Information about a specific ingredient"
+- name: "ingredient category"
+  description: "Category to which an ingredient belongs"
+- name: "recipe"
+  description: "Information about a specific recipe"
+- name: "recipe category"
+  description: "Category to which a recipe belongs"
+schemes:
+- "http"
+- "https"
+
+paths:
+  /ingredient:
+    get:
+      tags:
+      - "ingredient"
+      summary: "Get a list of all the ingredients"
+      description: "Get a list of all the ingredients"
+      operationId: "getIngredients"
+      parameters:
+      - name: "body"
+        in: "body"
+        description: "Pagination object for retrieving ingredients"
+        required: true
+        schema:
+          $ref: "#/definitions/Pagination"
+      responses:
+        200:
+          description: "Ingredients retrieved"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Ingredient"
+    post:
+      tags:
+      - "ingredient"
+      summary: "Add a new ingredient to the store"
+      description: "Add a new ingredient to the store"
+      operationId: "addIngredient"
+      parameters:
+      - name: "body"
+        in: "body"
+        description: "Ingredient object to add to the store"
+        required: true
+        schema:
+          $ref: "#/definitions/Ingredient"
+      responses:
+        200:
+          description: "Successfully added ingredient"
+        405:
+          description: "Invalid input"
+  /ingredient/{ingId}:
+    get:
+      tags:
+      - "ingredient"
+      summary: "Get a specific ingredient by ID"
+      description: "Get a specific ingredient by ID"
+      operationId: "getIngredientById"
+      parameters:
+      - name: "ingId"
+        in: "path"
+        description: "ID of the ingredient to return"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Successfully retrieved ingredient"
+          schema:
+            $ref: "#/definitions/Ingredient"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Ingredient not found"
+    put:
+      tags:
+      - "ingredient"
+      summary: "Update a specific ingredient in the store"
+      description: "Update a specific ingredient in the store"
+      operationId: "updateIngredient"
+      parameters:
+      - name: "ingId"
+        in: "path"
+        description: "ID of the ingredient to update"
+        required: true
+        type: "string"
+      - name: "body"
+        in: "body"
+        description: "Ingredient object to update"
+        required: true
+        schema:
+          $ref: "#/definitions/Ingredient"
+      responses:
+        200:
+          description: "Successfully updated ingredient"
+        405:
+          description: "Invalid input"
+    delete:
+      tags:
+      - "ingredient"
+      summary: "Delete a specific ingredient"
+      description: "Delete a specific ingredient"
+      operationId: "deleteIngredient"
+      parameters:
+      - name: "ingId"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Successfully deleted ingredient"
+        400:
+          description: "Invalid ID input"
+        404:
+          description: "Ingredient not found"
+          
+  /ingredientcategory:
+    get:
+      tags:
+      - "ingredient category"
+      summary: "Get a list of all the ingredient categories"
+      description: "Get a list of all the ingredient categories"
+      operationId: "getIngredientCategories"
+      parameters:
+      - name: "body"
+        in: "body"
+        description: "Pagination object for retrieving ingredient categories"
+        required: true
+        schema:
+          $ref: "#/definitions/Pagination"
+      responses:
+        200:
+          description: "Ingredient categories retrieved"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/IngredientCategory"
+    post:
+      tags:
+      - "ingredient category"
+      summary: "Add a new ingredient category to the store"
+      description: "Add a new ingredient category to the store"
+      operationId: "addIngredientCategory"
+      parameters:
+      - name: "body"
+        in: "body"
+        description: "Ingredient category object to add to the store"
+        required: true
+        schema:
+          $ref: "#/definitions/IngredientCategory"
+      responses:
+        200:
+          description: "Successfully added ingredient category"
+        405:
+          description: "Invalid input"
+  /ingredientcategory/{ingCatId}:
+    get:
+      tags:
+      - "ingredient category"
+      summary: "Get a specific ingredient category by ID"
+      description: "Get a specific ingredient category by ID"
+      operationId: "getIngredientCategoryById"
+      parameters:
+      - name: "ingCatId"
+        in: "path"
+        description: "ID of the ingredient category to return"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Successfully retrieved ingredient category"
+          schema:
+            $ref: "#/definitions/IngredientCategory"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Ingredient not found"
+    put:
+      tags:
+      - "ingredient category"
+      summary: "Update a specific ingredient category in the store"
+      description: "Update a specific ingredient category in the store"
+      operationId: "updateIngredientCategory"
+      parameters:
+      - name: "ingCatId"
+        in: "path"
+        description: "ID of the ingredient category to update"
+        required: true
+        type: "string"
+      - name: "body"
+        in: "body"
+        description: "Ingredient category object to update"
+        required: true
+        schema:
+          $ref: "#/definitions/IngredientCategory"
+      responses:
+        200:
+          description: "Successfully updated ingredient category"
+        405:
+          description: "Invalid input"
+    delete:
+      tags:
+      - "ingredient category"
+      summary: "Delete a specific ingredient category"
+      description: "Delete a specific ingredient category"
+      operationId: "deleteIngredientCategory"
+      parameters:
+      - name: "ingCatId"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Successfully deleted ingredient category"
+        400:
+          description: "Invalid ID input"
+        404:
+          description: "Ingredient not found"
+
+  /recipe:
+    get:
+      tags:
+      - "recipe"
+      summary: "Get a list of all the recipes"
+      description: "Get a list of all the recipes"
+      operationId: "getRecipes"
+      parameters:
+      - name: "body"
+        in: "body"
+        description: "Pagination object for retrieving recipes"
+        required: true
+        schema:
+          $ref: "#/definitions/Pagination"
+      responses:
+        200:
+          description: "Recipes retrieved"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Recipe"
+    post:
+      tags:
+      - "recipe"
+      summary: "Add a new recipe to the store"
+      description: "Add a new recipe to the store"
+      operationId: "addRecipe"
+      parameters:
+      - name: "body"
+        in: "body"
+        description: "Recipe object to add to the store"
+        required: true
+        schema:
+          $ref: "#/definitions/Recipe"
+      responses:
+        200:
+          description: "Successfully added recipe"
+        405:
+          description: "Invalid input"
+  /recipe/{recId}:
+    get:
+      tags:
+      - "recipe"
+      summary: "Get a specific recipe by ID"
+      description: "Get a specific recipe by ID"
+      operationId: "getRecipeById"
+      parameters:
+      - name: "recId"
+        in: "path"
+        description: "ID of the recipe to return"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Successfully retrieved recipe"
+          schema:
+            $ref: "#/definitions/Recipe"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Recipe not found"
+    put:
+      tags:
+      - "recipe"
+      summary: "Update a specific recipe in the store"
+      description: "Update a specific recipe in the store"
+      operationId: "updateRecipe"
+      parameters:
+      - name: "recId"
+        in: "path"
+        description: "ID of the recipe to update"
+        required: true
+        type: "string"
+      - name: "body"
+        in: "body"
+        description: "Recipe object to update"
+        required: true
+        schema:
+          $ref: "#/definitions/Recipe"
+      responses:
+        200:
+          description: "Successfully updated recipe"
+        405:
+          description: "Invalid input"
+    delete:
+      tags:
+      - "recipe"
+      summary: "Delete a specific recipe"
+      description: "Delete a specific recipe"
+      operationId: "deleteRecipe"
+      parameters:
+      - name: "recId"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Successfully deleted recipe"
+        400:
+          description: "Invalid ID input"
+        404:
+          description: "Recipe not found"
+          
+  /recipecategory:
+    get:
+      tags:
+      - "recipe category"
+      summary: "Get a list of all the recipe categories"
+      description: "Get a list of all the recipe categories"
+      operationId: "getRecipeCategories"
+      parameters:
+      - name: "body"
+        in: "body"
+        description: "Pagination object for retrieving recipe categories"
+        required: true
+        schema:
+          $ref: "#/definitions/Pagination"
+      responses:
+        200:
+          description: "Recipe categories retrieved"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/RecipeCategory"
+    post:
+      tags:
+      - "recipe category"
+      summary: "Add a new recipe category to the store"
+      description: "Add a new recipe category to the store"
+      operationId: "addRecipeCategory"
+      parameters:
+      - name: "body"
+        in: "body"
+        description: "Recipe category object to add to the store"
+        required: true
+        schema:
+          $ref: "#/definitions/RecipeCategory"
+      responses:
+        200:
+          description: "Successfully added recipe category"
+        405:
+          description: "Invalid input"
+  /recipecategory/{recCatId}:
+    get:
+      tags:
+      - "recipe category"
+      summary: "Get a specific recipe category by ID"
+      description: "Get a specific recipe category by ID"
+      operationId: "getRecipeCategoryById"
+      parameters:
+      - name: "recCatId"
+        in: "path"
+        description: "ID of the recipe category to return"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Successfully retrieved recipe category"
+          schema:
+            $ref: "#/definitions/RecipeCategory"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Recipe category not found"
+    put:
+      tags:
+      - "recipe category"
+      summary: "Update a specific recipe category in the store"
+      description: "Update a specific recipe category in the store"
+      operationId: "updateRecipeCategory"
+      parameters:
+      - name: "recCatId"
+        in: "path"
+        description: "ID of the recipe category to update"
+        required: true
+        type: "string"
+      - name: "body"
+        in: "body"
+        description: "Recipe category object to update"
+        required: true
+        schema:
+          $ref: "#/definitions/RecipeCategory"
+      responses:
+        200:
+          description: "Successfully updated recipe category"
+        405:
+          description: "Invalid input"
+    delete:
+      tags:
+      - "recipe category"
+      summary: "Delete a specific recipe category"
+      description: "Delete a specific recipe category"
+      operationId: "deleteRecipeCategory"
+      parameters:
+      - name: "recCatId"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Successfully deleted recipe category"
+        400:
+          description: "Invalid ID input"
+        404:
+          description: "Recipe category not found"
+          
+definitions:
+  Pagination:
+    type: "object"
+    properties:
+      limit:
+        type: "integer"
+      offset:
+        type: "integer"
+    required: [ "limit", "offset" ]
+  Ingredient:
+    type: "object"
+    properties:
+      ingId:
+        type: "string"
+      name:
+        type: "string"
+      category:
+        type: "string"
+      notes:
+        type: "string"
+      timestamp:
+        type: "string"
+        format: "date-time"
+      servingSize:
+        type: "number"
+        format: "double"
+      calories:
+        type: "number"
+        format: "double"
+      saturatedFat:
+        type: "number"
+        format: "double"
+      transFat:
+        type: "number"
+        format: "double"
+      totalFat:
+        type: "number"
+        format: "double"
+      cholesterol:
+        type: "number"
+        format: "double"
+      sodium:
+        type: "number"
+        format: "double"
+      carbohydrates:
+        type: "number"
+        format: "double"
+      protein:
+        type: "number"
+        format: "double"
+    required: [ "ingId", "name" ]
+  Recipe:
+    type: "object"
+    properties:
+      recId:
+        type: "string"
+      name:
+        type: "string"
+      category:
+        type: "string"
+      notes:
+        type: "string"
+      timestamp:
+        type: "string"
+        format: "date-time"
+      ingredients:
+        type: "array"
+        items:
+          type: "string"
+    required: [ "recId", "name" ]
+  IngredientCategory:
+    type: "object"
+    properties:
+      ingCatId:
+        type: "string"
+      name:
+        type: "string"
+      timestamp:
+        type: "string"
+        format: "date-time"
+    required: [ "ingCatId", "name" ]
+  RecipeCategory:
+    type: "object"
+    properties:
+      recCatId:
+        type: "string"
+      name:
+        type: "string"
+      timestamp:
+        type: "string"
+        format: "date-time"
+    required: [ "recCatId", "name" ]
+
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"
