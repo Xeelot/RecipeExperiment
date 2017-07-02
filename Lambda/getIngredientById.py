@@ -18,26 +18,20 @@ def respond(err, res=None):
 def lambda_handler(event, context):
 
     print("Received event: " + json.dumps(event, indent=2))
-    limit = 50
-    lastKey = None
-    if 'limit' in event['queryParams']:
-        limit = event['queryParams']['limit']
-    if 'lastKey' in event['queryParams']:
-        lastKey = {}
-        lastKey['ingId'] = {}
-        lastKey['ingId']['S'] = event['queryParams']['lastKey']
+    ingId = None
+    if 'ingId' in event['pathParams']:
+        ingId = {}
+        ingId['ingId'] = {}
+        ingId['ingId']['S'] = event['pathParams']['ingId']
 
+    if ingId is None:
+        return respond('Input Error')    
     try:
-        if lastKey is None:
-            response = client.scan(TableName='CookieExperiment-Ingredients',
-                Limit=limit, Select='ALL_ATTRIBUTES')
-        else:
-            response = client.scan(TableName='CookieExperiment-Ingredients',
-                Limit=limit, Select='ALL_ATTRIBUTES', ExclusiveStartKey=lastKey)
+        response = client.get_item(TableName='CookieExperiment-Ingredients', Key=ingId)
     except Exception as e:
         print(e)
         return respond('DynamoDB Error')
-    
+ 
     if 'Item' not in response:
         return respond('Not Found Error')
     return respond(None, response)
