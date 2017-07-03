@@ -1,0 +1,1231 @@
+---
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "Cookie Experiment"
+host: "8g32fiztxi.execute-api.us-west-2.amazonaws.com"
+basePath: "/prod"
+schemes:
+- "https"
+paths:
+  /ingredient:
+    get:
+      operationId: "getIngredients"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "lastKey"
+        in: "query"
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/ArrayOfIngredient"
+        400:
+          description: "400 response"
+        500:
+          description: "500 response"
+        501:
+          description: "501 response"
+        404:
+          description: "404 response"
+      security:
+      - api_key: []
+      x-amazon-apigateway-request-validator: "Validate query string parameters and\
+        \ headers"
+      x-amazon-apigateway-integration:
+        responses:
+          DynamoDB.*:
+            statusCode: "500"
+          Not Found.*:
+            statusCode: "404"
+          default:
+            statusCode: "200"
+          Invalid Input.*:
+            statusCode: "400"
+          API Mapping.*:
+            statusCode: "501"
+        uri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:319333097595:function:HCE-getItems/invocations"
+        requestTemplates:
+          application/json: "{\r\n  \"method\": \"$context.httpMethod\",\r\n  \"queryParams\"\
+            : {\r\n    #foreach($param in $input.params().querystring.keySet())\r\n\
+            \    \"$param\": \"$util.escapeJavaScript($input.params().querystring.get($param))\"\
+            \ #if($foreach.hasNext),#end\r\n    #end\r\n  },\r\n  \"tableName\": \"\
+            CookieExperiment-Ingredients\",\r\n  \"tableKey\": \"ingId\"\r\n}"
+        passthroughBehavior: "when_no_templates"
+        httpMethod: "POST"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+    post:
+      operationId: "addIngredient"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "CreateIngredient"
+        required: true
+        schema:
+          $ref: "#/definitions/CreateIngredient"
+      responses:
+        200:
+          description: "200 response"
+        400:
+          description: "400 response"
+        500:
+          description: "500 response"
+        501:
+          description: "501 response"
+        404:
+          description: "404 response"
+      security:
+      - api_key: []
+      x-amazon-apigateway-request-validator: "Validate body"
+      x-amazon-apigateway-integration:
+        responses:
+          DynamoDB.*:
+            statusCode: "500"
+          Not Found.*:
+            statusCode: "404"
+          default:
+            statusCode: "200"
+          Invalid Input.*:
+            statusCode: "400"
+          API Mapping.*:
+            statusCode: "501"
+        uri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:319333097595:function:HCE-postItem/invocations"
+        requestTemplates:
+          application/json: "{\r\n  \"method\": \"$context.httpMethod\",\r\n  \"body\"\
+            \ : $input.json('$'),\r\n  \"tableName\": \"CookieExperiment-Ingredients\"\
+            ,\r\n  \"tableKey\": \"ingId\"\r\n}"
+        passthroughBehavior: "when_no_templates"
+        httpMethod: "POST"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+  /ingredient/{ingId}:
+    get:
+      operationId: "getIngredientById"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "ingId"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Ingredient"
+        400:
+          description: "400 response"
+        500:
+          description: "500 response"
+        501:
+          description: "501 response"
+        404:
+          description: "404 response"
+      security:
+      - api_key: []
+      x-amazon-apigateway-request-validator: "Validate query string parameters and\
+        \ headers"
+      x-amazon-apigateway-integration:
+        responses:
+          DynamoDB.*:
+            statusCode: "500"
+          Not Found.*:
+            statusCode: "404"
+          default:
+            statusCode: "200"
+          Invalid Input.*:
+            statusCode: "400"
+          API Mapping.*:
+            statusCode: "501"
+        uri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:319333097595:function:HCE-getItemById/invocations"
+        requestTemplates:
+          application/json: "{\r\n  \"method\": \"$context.httpMethod\",\r\n  \"pathParams\"\
+            : {\r\n    #foreach($param in $input.params().path.keySet())\r\n    \"\
+            $param\": \"$util.escapeJavaScript($input.params().path.get($param))\"\
+            \ #if($foreach.hasNext),#end\r\n    #end\r\n  },\r\n  \"tableName\": \"\
+            CookieExperiment-Ingredients\",\r\n  \"tableKey\": \"ingId\"\r\n}"
+        passthroughBehavior: "when_no_templates"
+        httpMethod: "POST"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+    put:
+      operationId: "updateIngredient"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "ingId"
+        in: "path"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "Ingredient"
+        required: true
+        schema:
+          $ref: "#/definitions/Ingredient"
+      responses:
+        200:
+          description: "200 response"
+        400:
+          description: "400 response"
+        500:
+          description: "500 response"
+        501:
+          description: "501 response"
+        404:
+          description: "404 response"
+      security:
+      - api_key: []
+      x-amazon-apigateway-request-validator: "Validate body"
+      x-amazon-apigateway-integration:
+        responses:
+          DynamoDB.*:
+            statusCode: "500"
+          Not Found.*:
+            statusCode: "404"
+          default:
+            statusCode: "200"
+          Invalid Input.*:
+            statusCode: "400"
+          API Mapping.*:
+            statusCode: "501"
+        uri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:319333097595:function:HCE-putItem/invocations"
+        requestTemplates:
+          application/json: "{\r\n  \"method\": \"$context.httpMethod\",\r\n  \"body\"\
+            \ : $input.json('$'),\r\n  \"pathParams\": {\r\n    #foreach($param in\
+            \ $input.params().path.keySet())\r\n    \"$param\": \"$util.escapeJavaScript($input.params().path.get($param))\"\
+            \ #if($foreach.hasNext),#end\r\n    #end\r\n  },\r\n  \"tableName\": \"\
+            CookieExperiment-Ingredients\",\r\n  \"tableKey\": \"ingId\"\r\n}"
+        passthroughBehavior: "when_no_templates"
+        httpMethod: "POST"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+    delete:
+      operationId: "deleteIngredient"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "ingId"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+        400:
+          description: "400 response"
+        500:
+          description: "500 response"
+        501:
+          description: "501 response"
+        404:
+          description: "404 response"
+      security:
+      - api_key: []
+      x-amazon-apigateway-request-validator: "Validate query string parameters and\
+        \ headers"
+      x-amazon-apigateway-integration:
+        responses:
+          DynamoDB.*:
+            statusCode: "500"
+          Not Found.*:
+            statusCode: "404"
+          default:
+            statusCode: "200"
+          Invalid Input.*:
+            statusCode: "400"
+          API Mapping.*:
+            statusCode: "501"
+        uri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:319333097595:function:HCE-deleteItemById/invocations"
+        requestTemplates:
+          application/json: "{\r\n  \"method\": \"$context.httpMethod\",\r\n  \"pathParams\"\
+            : {\r\n    #foreach($param in $input.params().path.keySet())\r\n    \"\
+            $param\": \"$util.escapeJavaScript($input.params().path.get($param))\"\
+            \ #if($foreach.hasNext),#end\r\n    #end\r\n  },\r\n  \"tableName\": \"\
+            CookieExperiment-Ingredients\",\r\n  \"tableKey\": \"ingId\"\r\n}"
+        passthroughBehavior: "when_no_templates"
+        httpMethod: "POST"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+  /ingredientcategory:
+    get:
+      operationId: "getIngredientCategories"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "lastKey"
+        in: "query"
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/ArrayOfIngredientCategory"
+        400:
+          description: "400 response"
+        500:
+          description: "500 response"
+        501:
+          description: "501 response"
+        404:
+          description: "404 response"
+      security:
+      - api_key: []
+      x-amazon-apigateway-request-validator: "Validate query string parameters and\
+        \ headers"
+      x-amazon-apigateway-integration:
+        responses:
+          DynamoDB.*:
+            statusCode: "500"
+          Not Found.*:
+            statusCode: "404"
+          default:
+            statusCode: "200"
+          Invalid Input.*:
+            statusCode: "400"
+          API Mapping.*:
+            statusCode: "501"
+        uri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:319333097595:function:HCE-getItems/invocations"
+        requestTemplates:
+          application/json: "{\r\n  \"method\": \"$context.httpMethod\",\r\n  \"queryParams\"\
+            : {\r\n    #foreach($param in $input.params().querystring.keySet())\r\n\
+            \    \"$param\": \"$util.escapeJavaScript($input.params().querystring.get($param))\"\
+            \ #if($foreach.hasNext),#end\r\n    #end\r\n  },\r\n  \"tableName\": \"\
+            CookieExperiment-IngredientCategories\",\r\n  \"tableKey\": \"ingCatId\"\
+            \r\n}"
+        passthroughBehavior: "when_no_templates"
+        httpMethod: "POST"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+    post:
+      operationId: "addIngredientCategory"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "CreateIngredientCategory"
+        required: true
+        schema:
+          $ref: "#/definitions/CreateIngredientCategory"
+      responses:
+        200:
+          description: "200 response"
+        400:
+          description: "400 response"
+        500:
+          description: "500 response"
+        501:
+          description: "501 response"
+        404:
+          description: "404 response"
+      security:
+      - api_key: []
+      x-amazon-apigateway-request-validator: "Validate body"
+      x-amazon-apigateway-integration:
+        responses:
+          DynamoDB.*:
+            statusCode: "500"
+          Not Found.*:
+            statusCode: "404"
+          default:
+            statusCode: "200"
+          Invalid Input.*:
+            statusCode: "400"
+          API Mapping.*:
+            statusCode: "501"
+        uri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:319333097595:function:HCE-postItem/invocations"
+        requestTemplates:
+          application/json: "{\r\n  \"method\": \"$context.httpMethod\",\r\n  \"body\"\
+            \ : $input.json('$'),\r\n  \"tableName\": \"CookieExperiment-IngredientCategories\"\
+            ,\r\n  \"tableKey\": \"ingCatId\"\r\n}"
+        passthroughBehavior: "when_no_templates"
+        httpMethod: "POST"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+  /ingredientcategory/{ingCatId}:
+    get:
+      operationId: "getIngredientCategoryById"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "ingCatId"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/IngredientCategory"
+        400:
+          description: "400 response"
+        500:
+          description: "500 response"
+        501:
+          description: "501 response"
+        404:
+          description: "404 response"
+      security:
+      - api_key: []
+      x-amazon-apigateway-request-validator: "Validate query string parameters and\
+        \ headers"
+      x-amazon-apigateway-integration:
+        responses:
+          DynamoDB.*:
+            statusCode: "500"
+          Not Found.*:
+            statusCode: "404"
+          default:
+            statusCode: "200"
+          Invalid Input.*:
+            statusCode: "400"
+          API Mapping.*:
+            statusCode: "501"
+        uri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:319333097595:function:HCE-getItemById/invocations"
+        requestTemplates:
+          application/json: "{\r\n  \"method\": \"$context.httpMethod\",\r\n  \"pathParams\"\
+            : {\r\n    #foreach($param in $input.params().path.keySet())\r\n    \"\
+            $param\": \"$util.escapeJavaScript($input.params().path.get($param))\"\
+            \ #if($foreach.hasNext),#end\r\n    #end\r\n  },\r\n  \"tableName\": \"\
+            CookieExperiment-IngredientCategories\",\r\n  \"tableKey\": \"ingCatId\"\
+            \r\n}"
+        passthroughBehavior: "when_no_templates"
+        httpMethod: "POST"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+    put:
+      operationId: "updateIngredientCategory"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "ingCatId"
+        in: "path"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "IngredientCategory"
+        required: true
+        schema:
+          $ref: "#/definitions/IngredientCategory"
+      responses:
+        200:
+          description: "200 response"
+        400:
+          description: "400 response"
+        500:
+          description: "500 response"
+        501:
+          description: "501 response"
+        404:
+          description: "404 response"
+      security:
+      - api_key: []
+      x-amazon-apigateway-request-validator: "Validate body"
+      x-amazon-apigateway-integration:
+        responses:
+          DynamoDB.*:
+            statusCode: "500"
+          Not Found.*:
+            statusCode: "404"
+          default:
+            statusCode: "200"
+          Invalid Input.*:
+            statusCode: "400"
+          API Mapping.*:
+            statusCode: "501"
+        uri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:319333097595:function:HCE-putItem/invocations"
+        requestTemplates:
+          application/json: "{\r\n  \"method\": \"$context.httpMethod\",\r\n  \"body\"\
+            \ : $input.json('$'),\r\n  \"pathParams\": {\r\n    #foreach($param in\
+            \ $input.params().path.keySet())\r\n    \"$param\": \"$util.escapeJavaScript($input.params().path.get($param))\"\
+            \ #if($foreach.hasNext),#end\r\n    #end\r\n  },\r\n  \"tableName\": \"\
+            CookieExperiment-IngredientCategories\",\r\n  \"tableKey\": \"ingCatId\"\
+            \r\n}"
+        passthroughBehavior: "when_no_templates"
+        httpMethod: "POST"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+    delete:
+      operationId: "deleteIngredientCategory"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "ingCatId"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+        400:
+          description: "400 response"
+        500:
+          description: "500 response"
+        501:
+          description: "501 response"
+        404:
+          description: "404 response"
+      security:
+      - api_key: []
+      x-amazon-apigateway-request-validator: "Validate query string parameters and\
+        \ headers"
+      x-amazon-apigateway-integration:
+        responses:
+          DynamoDB.*:
+            statusCode: "500"
+          Not Found.*:
+            statusCode: "404"
+          default:
+            statusCode: "200"
+          Invalid Input.*:
+            statusCode: "400"
+          API Mapping.*:
+            statusCode: "501"
+        uri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:319333097595:function:HCE-deleteItemById/invocations"
+        requestTemplates:
+          application/json: "{\r\n  \"method\": \"$context.httpMethod\",\r\n  \"pathParams\"\
+            : {\r\n    #foreach($param in $input.params().path.keySet())\r\n    \"\
+            $param\": \"$util.escapeJavaScript($input.params().path.get($param))\"\
+            \ #if($foreach.hasNext),#end\r\n    #end\r\n  },\r\n  \"tableName\": \"\
+            CookieExperiment-IngredientCategories\",\r\n  \"tableKey\": \"ingCatId\"\
+            \r\n}"
+        passthroughBehavior: "when_no_templates"
+        httpMethod: "POST"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+  /recipe:
+    get:
+      operationId: "getRecipes"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "lastKey"
+        in: "query"
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/ArrayOfRecipe"
+        400:
+          description: "400 response"
+        500:
+          description: "500 response"
+        501:
+          description: "501 response"
+        404:
+          description: "404 response"
+      security:
+      - api_key: []
+      x-amazon-apigateway-request-validator: "Validate query string parameters and\
+        \ headers"
+      x-amazon-apigateway-integration:
+        responses:
+          DynamoDB.*:
+            statusCode: "500"
+          Not Found.*:
+            statusCode: "404"
+          default:
+            statusCode: "200"
+          Invalid Input.*:
+            statusCode: "400"
+          API Mapping.*:
+            statusCode: "501"
+        uri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:319333097595:function:HCE-getItems/invocations"
+        requestTemplates:
+          application/json: "{\r\n  \"method\": \"$context.httpMethod\",\r\n  \"queryParams\"\
+            : {\r\n    #foreach($param in $input.params().querystring.keySet())\r\n\
+            \    \"$param\": \"$util.escapeJavaScript($input.params().querystring.get($param))\"\
+            \ #if($foreach.hasNext),#end\r\n    #end\r\n  },\r\n  \"tableName\": \"\
+            CookieExperiment-Recipes\",\r\n  \"tableKey\": \"recId\"\r\n}"
+        passthroughBehavior: "when_no_templates"
+        httpMethod: "POST"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+    post:
+      operationId: "addRecipe"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "CreateRecipe"
+        required: true
+        schema:
+          $ref: "#/definitions/CreateRecipe"
+      responses:
+        200:
+          description: "200 response"
+        400:
+          description: "400 response"
+        500:
+          description: "500 response"
+        501:
+          description: "501 response"
+        404:
+          description: "404 response"
+      security:
+      - api_key: []
+      x-amazon-apigateway-request-validator: "Validate body"
+      x-amazon-apigateway-integration:
+        responses:
+          DynamoDB.*:
+            statusCode: "500"
+          Not Found.*:
+            statusCode: "404"
+          default:
+            statusCode: "200"
+          Invalid Input.*:
+            statusCode: "400"
+          API Mapping.*:
+            statusCode: "501"
+        uri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:319333097595:function:HCE-postItem/invocations"
+        requestTemplates:
+          application/json: "{\r\n  \"method\": \"$context.httpMethod\",\r\n  \"body\"\
+            \ : $input.json('$'),\r\n  \"tableName\": \"CookieExperiment-Recipes\"\
+            ,\r\n  \"tableKey\": \"recId\"\r\n}"
+        passthroughBehavior: "when_no_templates"
+        httpMethod: "POST"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+  /recipe/{recId}:
+    get:
+      operationId: "getRecipeById"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "recId"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Recipe"
+        400:
+          description: "400 response"
+        500:
+          description: "500 response"
+        501:
+          description: "501 response"
+        404:
+          description: "404 response"
+      security:
+      - api_key: []
+      x-amazon-apigateway-request-validator: "Validate query string parameters and\
+        \ headers"
+      x-amazon-apigateway-integration:
+        responses:
+          DynamoDB.*:
+            statusCode: "500"
+          Not Found.*:
+            statusCode: "404"
+          default:
+            statusCode: "200"
+          Invalid Input.*:
+            statusCode: "400"
+          API Mapping.*:
+            statusCode: "501"
+        uri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:319333097595:function:HCE-getItemById/invocations"
+        requestTemplates:
+          application/json: "{\r\n  \"method\": \"$context.httpMethod\",\r\n  \"pathParams\"\
+            : {\r\n    #foreach($param in $input.params().path.keySet())\r\n    \"\
+            $param\": \"$util.escapeJavaScript($input.params().path.get($param))\"\
+            \ #if($foreach.hasNext),#end\r\n    #end\r\n  },\r\n  \"tableName\": \"\
+            CookieExperiment-Recipes\",\r\n  \"tableKey\": \"recId\"\r\n}"
+        passthroughBehavior: "when_no_templates"
+        httpMethod: "POST"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+    put:
+      operationId: "updateRecipe"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "recId"
+        in: "path"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "Recipe"
+        required: true
+        schema:
+          $ref: "#/definitions/Recipe"
+      responses:
+        200:
+          description: "200 response"
+        400:
+          description: "400 response"
+        500:
+          description: "500 response"
+        501:
+          description: "501 response"
+        404:
+          description: "404 response"
+      security:
+      - api_key: []
+      x-amazon-apigateway-request-validator: "Validate body"
+      x-amazon-apigateway-integration:
+        responses:
+          DynamoDB.*:
+            statusCode: "500"
+          Not Found.*:
+            statusCode: "404"
+          default:
+            statusCode: "200"
+          Invalid Input.*:
+            statusCode: "400"
+          API Mapping.*:
+            statusCode: "501"
+        uri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:319333097595:function:HCE-putItem/invocations"
+        requestTemplates:
+          application/json: "{\r\n  \"method\": \"$context.httpMethod\",\r\n  \"body\"\
+            \ : $input.json('$'),\r\n  \"pathParams\": {\r\n    #foreach($param in\
+            \ $input.params().path.keySet())\r\n    \"$param\": \"$util.escapeJavaScript($input.params().path.get($param))\"\
+            \ #if($foreach.hasNext),#end\r\n    #end\r\n  },\r\n  \"tableName\": \"\
+            CookieExperiment-Recipes\",\r\n  \"tableKey\": \"recId\"\r\n}"
+        passthroughBehavior: "when_no_templates"
+        httpMethod: "POST"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+    delete:
+      operationId: "deleteRecipe"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "recId"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+        400:
+          description: "400 response"
+        500:
+          description: "500 response"
+        501:
+          description: "501 response"
+        404:
+          description: "404 response"
+      security:
+      - api_key: []
+      x-amazon-apigateway-request-validator: "Validate query string parameters and\
+        \ headers"
+      x-amazon-apigateway-integration:
+        responses:
+          DynamoDB.*:
+            statusCode: "500"
+          Not Found.*:
+            statusCode: "404"
+          default:
+            statusCode: "200"
+          Invalid Input.*:
+            statusCode: "400"
+          API Mapping.*:
+            statusCode: "501"
+        uri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:319333097595:function:HCE-deleteItemById/invocations"
+        requestTemplates:
+          application/json: "{\r\n  \"method\": \"$context.httpMethod\",\r\n  \"pathParams\"\
+            : {\r\n    #foreach($param in $input.params().path.keySet())\r\n    \"\
+            $param\": \"$util.escapeJavaScript($input.params().path.get($param))\"\
+            \ #if($foreach.hasNext),#end\r\n    #end\r\n  },\r\n  \"tableName\": \"\
+            CookieExperiment-Recipes\",\r\n  \"tableKey\": \"recId\"\r\n}"
+        passthroughBehavior: "when_no_templates"
+        httpMethod: "POST"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+  /recipecategory:
+    get:
+      operationId: "getRecipeCategories"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "lastKey"
+        in: "query"
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/ArrayOfRecipeCategory"
+        400:
+          description: "400 response"
+        500:
+          description: "500 response"
+        501:
+          description: "501 response"
+        404:
+          description: "404 response"
+      security:
+      - api_key: []
+      x-amazon-apigateway-request-validator: "Validate query string parameters and\
+        \ headers"
+      x-amazon-apigateway-integration:
+        responses:
+          DynamoDB.*:
+            statusCode: "500"
+          Not Found.*:
+            statusCode: "404"
+          default:
+            statusCode: "200"
+          Invalid Input.*:
+            statusCode: "400"
+          API Mapping.*:
+            statusCode: "501"
+        uri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:319333097595:function:HCE-getItems/invocations"
+        requestTemplates:
+          application/json: "{\r\n  \"method\": \"$context.httpMethod\",\r\n  \"queryParams\"\
+            : {\r\n    #foreach($param in $input.params().querystring.keySet())\r\n\
+            \    \"$param\": \"$util.escapeJavaScript($input.params().querystring.get($param))\"\
+            \ #if($foreach.hasNext),#end\r\n    #end\r\n  },\r\n  \"tableName\": \"\
+            CookieExperiment-RecipeCategories\",\r\n  \"tableKey\": \"recCatId\"\r\
+            \n}"
+        passthroughBehavior: "when_no_templates"
+        httpMethod: "POST"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+    post:
+      operationId: "addRecipeCategory"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "CreateRecipeCategory"
+        required: true
+        schema:
+          $ref: "#/definitions/CreateRecipeCategory"
+      responses:
+        200:
+          description: "200 response"
+        400:
+          description: "400 response"
+        500:
+          description: "500 response"
+        501:
+          description: "501 response"
+        404:
+          description: "404 response"
+      security:
+      - api_key: []
+      x-amazon-apigateway-request-validator: "Validate body"
+      x-amazon-apigateway-integration:
+        responses:
+          DynamoDB.*:
+            statusCode: "500"
+          Not Found.*:
+            statusCode: "404"
+          default:
+            statusCode: "200"
+          Invalid Input.*:
+            statusCode: "400"
+          API Mapping.*:
+            statusCode: "501"
+        uri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:319333097595:function:HCE-postItem/invocations"
+        requestTemplates:
+          application/json: "{\r\n  \"method\": \"$context.httpMethod\",\r\n  \"body\"\
+            \ : $input.json('$'),\r\n  \"tableName\": \"CookieExperiment-RecipeCategories\"\
+            ,\r\n  \"tableKey\": \"recCatId\"\r\n}"
+        passthroughBehavior: "when_no_templates"
+        httpMethod: "POST"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+  /recipecategory/{recCatId}:
+    get:
+      operationId: "getRecipeCategoryById"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "recCatId"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/RecipeCategory"
+        400:
+          description: "400 response"
+        500:
+          description: "500 response"
+        501:
+          description: "501 response"
+        404:
+          description: "404 response"
+      security:
+      - api_key: []
+      x-amazon-apigateway-request-validator: "Validate query string parameters and\
+        \ headers"
+      x-amazon-apigateway-integration:
+        responses:
+          DynamoDB.*:
+            statusCode: "500"
+          Not Found.*:
+            statusCode: "404"
+          default:
+            statusCode: "200"
+          Invalid Input.*:
+            statusCode: "400"
+          API Mapping.*:
+            statusCode: "501"
+        uri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:319333097595:function:HCE-getItemById/invocations"
+        requestTemplates:
+          application/json: "{\r\n  \"method\": \"$context.httpMethod\",\r\n  \"pathParams\"\
+            : {\r\n    #foreach($param in $input.params().path.keySet())\r\n    \"\
+            $param\": \"$util.escapeJavaScript($input.params().path.get($param))\"\
+            \ #if($foreach.hasNext),#end\r\n    #end\r\n  },\r\n  \"tableName\": \"\
+            CookieExperiment-RecipeCategories\",\r\n  \"tableKey\": \"recCatId\"\r\
+            \n}"
+        passthroughBehavior: "when_no_templates"
+        httpMethod: "POST"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+    put:
+      operationId: "updateRecipeCategory"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "recCatId"
+        in: "path"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "RecipeCategory"
+        required: true
+        schema:
+          $ref: "#/definitions/RecipeCategory"
+      responses:
+        200:
+          description: "200 response"
+        400:
+          description: "400 response"
+        500:
+          description: "500 response"
+        501:
+          description: "501 response"
+        404:
+          description: "404 response"
+      security:
+      - api_key: []
+      x-amazon-apigateway-request-validator: "Validate body"
+      x-amazon-apigateway-integration:
+        responses:
+          DynamoDB.*:
+            statusCode: "500"
+          Not Found.*:
+            statusCode: "404"
+          default:
+            statusCode: "200"
+          Invalid Input.*:
+            statusCode: "400"
+          API Mapping.*:
+            statusCode: "501"
+        uri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:319333097595:function:HCE-putItem/invocations"
+        requestTemplates:
+          application/json: "{\r\n  \"method\": \"$context.httpMethod\",\r\n  \"body\"\
+            \ : $input.json('$'),\r\n  \"pathParams\": {\r\n    #foreach($param in\
+            \ $input.params().path.keySet())\r\n    \"$param\": \"$util.escapeJavaScript($input.params().path.get($param))\"\
+            \ #if($foreach.hasNext),#end\r\n    #end\r\n  },\r\n  \"tableName\": \"\
+            CookieExperiment-RecipeCategories\",\r\n  \"tableKey\": \"recCatId\"\r\
+            \n}"
+        passthroughBehavior: "when_no_templates"
+        httpMethod: "POST"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+    delete:
+      operationId: "deleteRecipeCategory"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "recCatId"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+        400:
+          description: "400 response"
+        500:
+          description: "500 response"
+        501:
+          description: "501 response"
+        404:
+          description: "404 response"
+      x-amazon-apigateway-request-validator: "Validate query string parameters and\
+        \ headers"
+      x-amazon-apigateway-integration:
+        responses:
+          DynamoDB.*:
+            statusCode: "500"
+          Not Found.*:
+            statusCode: "404"
+          default:
+            statusCode: "200"
+          Invalid Input.*:
+            statusCode: "400"
+          API Mapping.*:
+            statusCode: "501"
+        uri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:319333097595:function:HCE-deleteItemById/invocations"
+        requestTemplates:
+          application/json: "{\r\n  \"method\": \"$context.httpMethod\",\r\n  \"pathParams\"\
+            : {\r\n    #foreach($param in $input.params().path.keySet())\r\n    \"\
+            $param\": \"$util.escapeJavaScript($input.params().path.get($param))\"\
+            \ #if($foreach.hasNext),#end\r\n    #end\r\n  },\r\n  \"tableName\": \"\
+            CookieExperiment-RecipeCategories\",\r\n  \"tableKey\": \"recCatId\"\r\
+            \n}"
+        passthroughBehavior: "when_no_templates"
+        httpMethod: "POST"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws"
+securityDefinitions:
+  api_key:
+    type: "apiKey"
+    name: "x-api-key"
+    in: "header"
+definitions:
+  CreateRecipeCategory:
+    type: "object"
+    required:
+    - "name"
+    properties:
+      name:
+        type: "string"
+  Ingredient:
+    type: "object"
+    required:
+    - "ingId"
+    - "name"
+    properties:
+      ingId:
+        type: "string"
+      name:
+        type: "string"
+      category:
+        type: "string"
+      notes:
+        type: "string"
+      timestamp:
+        type: "string"
+        format: "date-time"
+      servingSize:
+        type: "number"
+        format: "double"
+      calories:
+        type: "number"
+        format: "double"
+      saturatedFat:
+        type: "number"
+        format: "double"
+      transFat:
+        type: "number"
+        format: "double"
+      totalFat:
+        type: "number"
+        format: "double"
+      cholesterol:
+        type: "number"
+        format: "double"
+      sodium:
+        type: "number"
+        format: "double"
+      carbohydrates:
+        type: "number"
+        format: "double"
+      protein:
+        type: "number"
+        format: "double"
+  Recipe:
+    type: "object"
+    required:
+    - "name"
+    - "recId"
+    properties:
+      recId:
+        type: "string"
+      name:
+        type: "string"
+      category:
+        type: "string"
+      notes:
+        type: "string"
+      timestamp:
+        type: "string"
+        format: "date-time"
+      ingredients:
+        type: "array"
+        items:
+          type: "string"
+  RecipeCategory:
+    type: "object"
+    required:
+    - "name"
+    - "recCatId"
+    properties:
+      recCatId:
+        type: "string"
+      name:
+        type: "string"
+      timestamp:
+        type: "string"
+        format: "date-time"
+  ArrayOfIngredientCategory:
+    type: "array"
+    items:
+      $ref: "#/definitions/IngredientCategory"
+  ArrayOfIngredient:
+    type: "array"
+    items:
+      $ref: "#/definitions/Ingredient"
+  ArrayOfRecipe:
+    type: "array"
+    items:
+      $ref: "#/definitions/Recipe"
+  CreateIngredient:
+    type: "object"
+    required:
+    - "name"
+    properties:
+      name:
+        type: "string"
+      category:
+        type: "string"
+      notes:
+        type: "string"
+      servingSize:
+        type: "number"
+        format: "double"
+      calories:
+        type: "number"
+        format: "double"
+      saturatedFat:
+        type: "number"
+        format: "double"
+      transFat:
+        type: "number"
+        format: "double"
+      totalFat:
+        type: "number"
+        format: "double"
+      cholesterol:
+        type: "number"
+        format: "double"
+      sodium:
+        type: "number"
+        format: "double"
+      carbohydrates:
+        type: "number"
+        format: "double"
+      protein:
+        type: "number"
+        format: "double"
+  CreateRecipe:
+    type: "object"
+    required:
+    - "name"
+    properties:
+      name:
+        type: "string"
+      category:
+        type: "string"
+      notes:
+        type: "string"
+      ingredients:
+        type: "array"
+        items:
+          type: "string"
+  ArrayOfRecipeCategory:
+    type: "array"
+    items:
+      $ref: "#/definitions/RecipeCategory"
+  CreateIngredientCategory:
+    type: "object"
+    required:
+    - "name"
+    properties:
+      name:
+        type: "string"
+  IngredientCategory:
+    type: "object"
+    required:
+    - "ingCatId"
+    - "name"
+    properties:
+      ingCatId:
+        type: "string"
+      name:
+        type: "string"
+      timestamp:
+        type: "string"
+        format: "date-time"
+x-amazon-apigateway-request-validators:
+  Validate body:
+    validateRequestParameters: false
+    validateRequestBody: true
+  Validate query string parameters and headers:
+    validateRequestParameters: true
+    validateRequestBody: false
