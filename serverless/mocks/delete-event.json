@@ -1,0 +1,12 @@
+{
+  "pathParameters": {
+    "ingCatId": "4f701970-613f-11e7-8eb3-7b776bc8b8bf"
+  },
+  "requestContext": {
+    "authorizer": {
+      "claims": {
+        "sub": "USER-SUB-1234"
+      }
+    }
+  }
+}

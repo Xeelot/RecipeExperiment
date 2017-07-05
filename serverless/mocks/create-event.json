@@ -1,0 +1,10 @@
+{
+  "body": "{\"category\":\"hello world\"}",
+  "requestContext": {
+    "authorizer": {
+      "claims": {
+        "sub": "USER-SUB-1234"
+      }
+    }
+  }
+}
